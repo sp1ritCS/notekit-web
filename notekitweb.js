@@ -1,3 +1,5 @@
+"use strict";
+
 class Stroke {
 	constructor(r, g, b, a, ncoords) {
 		this.r = r;
@@ -43,6 +45,25 @@ class NoteKitDrawing {
 			pos += 5+3*ncoords;
 		}
 	}
+
+	draw_to_canvas(canvas) {
+		const ctx = canvas.getContext("2d");
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+		canvas.width = this.width;
+		canvas.height = this.height;
+		this.strokes.forEach(function(stroke) {
+			ctx.strokeStyle = `rgba(${Math.floor(stroke.r * 255)}, ${Math.floor(stroke.g * 255)}, ${Math.floor(stroke.b * 255)}, ${stroke.a})`;
+			for (var i = 1; i < stroke.xcoords.length; i++) {
+				ctx.beginPath();
+				ctx.moveTo(stroke.xcoords[i-1], stroke.ycoords[i-1]);
+				ctx.lineTo(stroke.xcoords[i], stroke.ycoords[i]);
+				ctx.lineWidth = stroke.pcoords[i-1];
+				ctx.closePath();
+				ctx.stroke();
+			}
+		});
+	}
 }
 
 function encoded_string_to_stream(encoded) {
@@ -71,8 +92,3 @@ async function notekit_drawing_from_string(encoded) {
 		).arrayBuffer()
 	));
 }
-
-notekit_drawing_from_string("eNqFirEJACAQA8/SBVxH0RVcxu7n/srXrxTEQLiERAE1B25Jjptakd5gNKd1Ul27U8/8/FJ+ngQaFJs=")
-.then(console.log)
-.catch(console.err);
-
