@@ -59,6 +59,11 @@
 			const input = document.getElementById("encoded");
 			const btn = document.getElementById("render_btn");
 
+			btn.disabled = 1;
+			notekit_init(_strategy => {
+				btn.disabled = 0;
+			});
+
 			btn.addEventListener("click", (_e) => {
 				btn.disabled = 1;
 				notekit_drawing_from_string(input.value)
@@ -68,6 +73,7 @@
 					})
 					.catch((err) => {
 						console.error(err);
+						alert(err);
 						btn.disabled = 0;
 					});
 			});
